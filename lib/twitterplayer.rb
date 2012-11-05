@@ -7,7 +7,6 @@ class TwitterPlayer
 
 	def initialize
 		@listener = TwitterReader.new
-		@unique_key
 		@twitter_name
 		@last_board = "."*42
 		@new_board = "."*42

@@ -26,16 +26,11 @@ require_relative './lib/cvc.rb'
 
 
 p1 = AI.new
-p2 = Twitter.new
+p2 = AI.new
 g = ConnectFour
 
 cvc = ComputerVsComputer.new(g.new, p1, p2)
 
-results = []
-500.times do
-  cvc.start
-  results << cvc.game.utility
-end
+cvc.start
 
-# puts cvc.game.utility
-puts results.count(1)
+puts "Winning player #{cvc.game.utility}"

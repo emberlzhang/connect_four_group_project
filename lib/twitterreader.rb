@@ -5,7 +5,7 @@ class TwitterReader
 	include Credentializer
 	attr_reader :client, :credentials
 
-  MAX_CACHE = 1
+  MAX_CACHE = 50
 
   def self.challenger_name(msg)
     @cache  ||= []
@@ -25,9 +25,13 @@ class TwitterReader
 		@client ||= client_with_authentication
 	end
 
-  def get_move(twitter_user_name, unique_key)
+  def get_move(twitter_user_name)
     # a string of the form: "@username blablabla |.......|.......|.......|.......|...XO..|..XOX..| #uniquekey #dbc_c4"
-    client.search("to:#{twitter_user_name} '#'#{unique_key} #dbc_c4",:result_type=>"recent").results.first.text
+    client.search("to:#{twitter_user_name} #dbc_c4",:result_type=>"recent").results.first.text
+  end
+
+  def send_move(msg)
+    client.update
   end
 
 	private
@@ -41,5 +45,3 @@ class TwitterReader
     end
     return new_client
 	end #TwitterReader
-
-client.search("#dbc_c4").results.first

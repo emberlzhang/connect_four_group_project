@@ -12,7 +12,7 @@ class ComputerVsComputer
       game.make_move(new_move)
 
       puts "Player 1: #{new_move}"
-      game.display_board
+      puts game.display_board
 
       break if game.over?
 
@@ -23,7 +23,7 @@ class ComputerVsComputer
       p1.set_move(new_move)
 
       puts "Player 2: #{new_move}"
-      game.display_board
+      puts game.display_board
     end
   end #start
 end #ComputerVsComputer

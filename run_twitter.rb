@@ -7,22 +7,46 @@ require_relative './lib/cvt.rb'
 
 # Start listening
 
-LISTEN_INTERVAL = 10 #seconds
+LISTEN_INTERVAL    = 10 #seconds
+BROADCAST_INTERVAL = 10 #seconds
 
-EM.run do
+def listen_for_challenges
   EM::PeriodicTimer.new(LISTEN_INTERVAL) do
-    # Read Twitter search results for new challenges
     challenger = TwitterReader.challenger_name("Who wants to get demolished? #dbc_c4")
+    start_game_as_p2(challenger) if challenger
   end
 end
 
 
+def start_game_as_p2(challenger)
+  p1 = AI.new
+  p2 = TwitterPlayer.new(challenger)
+  cvt = ComputerVsTwitter.new(g.new, p1, p2)
+  cvt.start
+end
 
-# p1 = AI.new
-# p2 = TwitterPlayer.new(name,unique_key)
-g = ConnectFour
+def start_game_as_p1(challenger)
+  p2 = AI.new
+  p1 = TwitterPlayer.new(challenger)
+  cvt = ComputerVsTwitter.new(g.new, p1, p2)
+  cvt.start
+end
+
+
+def broadcast_challenge
+  EM::PeriodicTimer.new(BROADCAST_INTERVAL) do
+    TwitterReader.broadcast("Who wants to get demolished? #dbc_c4")
+    listen_for_challenge_acceptance
+  end
+end
+
+def listen_for_challenge_acceptance
+  challenger = TwitterReader.challenger_name("Who wants to get demolished? #dbc_c4")
+    start_game_as_p1(challenger) if challenger
+end
+
 
 # cvt = ComputerVsTwitter.new(g.new, p1, p2)
 # cvt.start
 
-puts cvc.game.utility
+# puts cvc.game.utility
