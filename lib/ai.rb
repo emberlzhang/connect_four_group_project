@@ -14,6 +14,6 @@ class AI
   def set_move(col)
     @ai.play(col)
   end
-    
+
 
 end

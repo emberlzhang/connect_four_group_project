@@ -2,40 +2,53 @@ require 'twitter'
 require_relative './credentializer.rb'
 
 class TwitterReader
-	include Credentializer
 	attr_reader :client, :credentials
 
   MAX_CACHE = 50
 
-  def self.challenger_name(msg)
-    @cache  ||= []
-    unless @cache.size >= MAX_CACHE
-      @client ||= client_with_authentication
-      result = client.search("#{msg}").results.first.attrs
-      id, name = result[:id], result[:user][:name]
-      @cache << [name,id] unless @cache.any? {|n,i| i == id } # That messsage id is already in the cache
-    end
+  def self.challenger_name(msg,name=nil)
+    result = client.search(msg).results.first.attrs
+    to_name, from_name = result[:entities][:user_mentions].first[:screen_name], result[:user][:name]
 
-    # FIFO
-    @cache.shift[0]
+    if name == to_name
+      return from_name
+    else
+      nil
+    end
   end
 
-	def initialize
-		@credentials = twitter_credentials(self)
-		@client ||= client_with_authentication
-	end
+  def self.broadcast(msg)
+    client.update("#{msg} ##{uniquekey}")
+  end
+
+  def self.client
+    @client ||= client_with_authentication
+  end
+
+  def client
+    @client ||= client_with_authentication
+  end
 
   def get_move(twitter_user_name)
     # a string of the form: "@username blablabla |.......|.......|.......|.......|...XO..|..XOX..| #uniquekey #dbc_c4"
     client.search("to:#{twitter_user_name} #dbc_c4",:result_type=>"recent").results.first.text
   end
 
-  def send_move(msg)
-    client.update
+  def send_move(twitter_user_name,board)
+    client.update("@#{twitter_user_name} #{board} #dbc_c4 ##{uniquekey}")
+  end
+
+  def self.uniquekey
+    (('a'..'z').to_a + ('A'..'Z').to_a + (1..9).to_a).shuffle[0..2].join
+  end
+
+  def uniquekey
+    self.class.uniquekey
   end
 
 	private
-  def client_with_authentication
+  def self.client_with_authentication
+    credentials = Credentializer.twitter_credentials
     new_client = Twitter::Client.new
     new_client.configure do |config|
       config.consumer_key       = credentials[:consumer_key]
@@ -44,4 +57,9 @@ class TwitterReader
       config.oauth_token_secret = credentials[:oauth_token_secret]
     end
     return new_client
-	end #TwitterReader
+  end
+
+  def client_with_authentication
+    self.class.client_with_authentication
+  end
+end #TwitterReader

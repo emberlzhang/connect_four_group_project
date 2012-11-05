@@ -7,7 +7,6 @@ class TwitterPlayer
 
 	def initialize
 		@listener = TwitterReader.new
-		@twitter_name
 		@last_board = "."*42
 		@new_board = "."*42
 	end
@@ -23,7 +22,7 @@ class TwitterPlayer
 		#Set old board to new board, before getting new board
 		last_board = new_board
 		# Sets new_board as a string in the form ...............................XO....XOX.."
-		new_board = to_string!(listener.get_move(twitter_name,unique_key))
+		new_board = to_string!(listener.get_move)
 	end
 
 	def column_move
