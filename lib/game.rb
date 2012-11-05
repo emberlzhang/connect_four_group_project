@@ -12,7 +12,7 @@ class TicTacToe
   def initialize(h=3, v=3, k=3)
     # Build a list of [x,y] available moves
     @h, @v, @k = h, v, k
-    @to_move = 'x'
+    @to_move = 'X'
     @utility = 0 # 0 draw, -1 player2, 1 player1
     @board = {}
     @moves = initial_moves
@@ -49,10 +49,10 @@ class TicTacToe
     compute_utility(move)
 
     # Switch players -- working
-    if @to_move == 'x'
-      @to_move = 'o'
+    if @to_move == 'X'
+      @to_move = 'O'
     else
-      @to_move = 'x'
+      @to_move = 'X'
     end
     return
   end
@@ -64,17 +64,18 @@ class TicTacToe
 
   def display_board
     x_moves.each do |x|
-      puts
+      print "|"
       y_moves.each do |y|
         print "#{@board.fetch([x,y],'.')} "
       end
     end
+    print "|"
   end
 
   def compute_utility(move)
     if deltas.any? {|delta| k_in_row?(move,delta) }
-      @utility = 1 if @to_move == 'x'
-      @utility = -1 if @to_move == 'o'
+      @utility = 1 if @to_move == 'X'
+      @utility = -1 if @to_move == 'O'
     end
   end
 
@@ -149,10 +150,10 @@ class ConnectFour < TicTacToe
     compute_utility(move)
 
     # Switch players -- working
-    if @to_move == 'x'
-      @to_move = 'o'
+    if @to_move == 'X'
+      @to_move = 'O'
     else
-      @to_move = 'x'
+      @to_move = 'X'
     end
     return
   end
